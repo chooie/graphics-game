@@ -29,11 +29,6 @@ int g_gl_width = 640;
 int g_gl_height = 480;
 GLFWwindow* g_window = NULL;
 
-GLfloat* g_vp = NULL; // array of vertex points
-GLfloat* g_vn = NULL; // array of vertex normals
-GLfloat* g_vt = NULL; // array of texture coordinates
-int g_point_count = 0;
-
 #include "lib/load_utils.cpp"
 
 int main () {
@@ -42,49 +37,23 @@ int main () {
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable (GL_DEPTH_TEST); // enable depth-testing
 	// depth-testing interprets a smaller value as "closer"
-
 	glDepthFunc (GL_LESS);
-	assert (load_mesh ("meshes/monkey.obj"));
 
 	GLuint monkey_vao;
-	glGenVertexArrays (1, &monkey_vao);
+	int monkey_point_count;
+	assert (load_mesh ("meshes/monkey.obj", &monkey_vao, &monkey_point_count));
+	// Set up Monkey
 	glBindVertexArray (monkey_vao);
 
-	GLuint points_vbo;
-	if (NULL != g_vp) {
-		glGenBuffers (1, &points_vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, points_vbo);
-		glBufferData (GL_ARRAY_BUFFER, 3 * g_point_count * sizeof (GLfloat), g_vp,
-									GL_STATIC_DRAW);
-		glVertexAttribPointer (0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (0);
-		printf ("enabled points\n");
-	}
-
-	GLuint normals_vbo;
-	if (NULL != g_vn) {
-		glGenBuffers (1, &normals_vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, normals_vbo);
-		glBufferData (GL_ARRAY_BUFFER, 3 * g_point_count * sizeof (GLfloat), g_vn,
-									GL_STATIC_DRAW);
-		glVertexAttribPointer (1, 3, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (1);
-		printf ("enabled normals\n");
-	}
-
-	GLuint texcoords_vbo;
-	if (NULL != g_vt) {
-		glGenBuffers (1, &texcoords_vbo);
-		glBindBuffer (GL_ARRAY_BUFFER, texcoords_vbo);
-		glBufferData (GL_ARRAY_BUFFER, 2 * g_point_count * sizeof (GLfloat), g_vt,
-									GL_STATIC_DRAW);
-		glVertexAttribPointer (2, 2, GL_FLOAT, GL_FALSE, 0, NULL);
-		glEnableVertexAttribArray (2);
-		printf ("enabled texcoords\n");
-	}
+	GLuint planet_vao;
+	int planet_point_count;
+	assert(load_mesh("meshes/planet.obj", &planet_vao, &planet_point_count));
+	// Set up Planet
+	glBindVertexArray (planet_vao);
 
 	GLuint shader_programme = create_programme_from_files (
-		"shaders/test_vs.glsl", "shaders/test_fs.glsl");
+		"shaders/test_vs.glsl", "shaders/test_fs.glsl"
+	);
 
 	GLint diffuse_map_loc, specular_map_loc, ambient_map_loc, emission_map_loc;
 	diffuse_map_loc = glGetUniformLocation (shader_programme, "diffuse_map");
@@ -131,7 +100,6 @@ int main () {
 		0.0f, 0.0f, Pz, 0.0f
 	};
 
-
 	float cam_speed = 5.0f; // 1 unit per second
 	float cam_yaw_speed = 90.0f; // 10 degrees per second
 	// don't start at zero, or we will be too close
@@ -168,7 +136,13 @@ int main () {
 		glUseProgram (shader_programme);
 		glBindVertexArray (monkey_vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
-		glDrawArrays (GL_TRIANGLES, 0, g_point_count);
+		glDrawArrays (GL_TRIANGLES, 0, monkey_point_count);
+
+		glUseProgram (shader_programme);
+		glBindVertexArray (planet_vao);
+		// draw points 0-3 from the currently bound VAO with current in-use shader
+		glDrawArrays (GL_TRIANGLES, 0, planet_point_count);
+
 		// update other events like input handling
 		glfwPollEvents ();
 

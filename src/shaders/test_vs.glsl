@@ -13,7 +13,7 @@ layout(location = 2) in vec2 texture_coord;
 // uniform vec3 vertex_normal;
 // uniform vec2 texture_coord;
 
-uniform mat4 view, proj;
+uniform mat4 model, view, proj;
 
 out vec3 pos_eye;
 out vec3 norm_eye; // positions and normals in eye space
