@@ -34,127 +34,7 @@ GLfloat* g_vn = NULL; // array of vertex normals
 GLfloat* g_vt = NULL; // array of texture coordinates
 int g_point_count = 0;
 
-bool load_texture (const char* file_name, GLuint* tex) {
-	int x, y, n;
-	int force_channels = 4;
-	unsigned char* image_data = stbi_load (file_name, &x, &y, &n,
-																				 force_channels);
-	if (!image_data) {
-		fprintf (stderr, "ERROR: could not load %s\n", file_name);
-		return false;
-	}
-	// NPOT check
-	if ((x & (x - 1)) != 0 || (y & (y - 1)) != 0) {
-		fprintf (stderr, "WARNING: texture %s is not power-of-2 dimensions\n",
-						 file_name);
-	}
-	int width_in_bytes = x * 4;
-	unsigned char *top = NULL;
-	unsigned char *bottom = NULL;
-	unsigned char temp = 0;
-	int half_height = y / 2;
-
-	for (int row = 0; row < half_height; row++) {
-		top = image_data + row * width_in_bytes;
-		bottom = image_data + (y - row - 1) * width_in_bytes;
-		for (int col = 0; col < width_in_bytes; col++) {
-			temp = *top;
-			*top = *bottom;
-			*bottom = temp;
-			top++;
-			bottom++;
-		}
-	}
-	glGenTextures (1, tex);
-	glBindTexture (GL_TEXTURE_2D, *tex);
-	glTexImage2D (
-		GL_TEXTURE_2D,
-		0,
-		GL_RGBA,
-		x,
-		y,
-		0,
-		GL_RGBA,
-		GL_UNSIGNED_BYTE,
-		image_data
-	);
-	glGenerateMipmap (GL_TEXTURE_2D);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-									 GL_LINEAR_MIPMAP_LINEAR);
-	GLfloat max_aniso = 0.0f;
-	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &max_aniso);
-	// set the maximum!
-	glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, max_aniso);
-	return true;
-}
-
-bool load_mesh (const char* file_name) {
-	const aiScene* scene = aiImportFile (file_name, aiProcess_Triangulate);
-	if (!scene) {
-		fprintf (stderr, "ERROR: reading mesh %s\n", file_name);
-		return false;
-	}
-	printf ("  %i animations\n", scene->mNumAnimations);
-	printf ("  %i cameras\n", scene->mNumCameras);
-	printf ("  %i lights\n", scene->mNumLights);
-	printf ("  %i materials\n", scene->mNumMaterials);
-	printf ("  %i meshes\n", scene->mNumMeshes);
-	printf ("  %i textures\n", scene->mNumTextures);
-
-	// get first mesh only
-	const aiMesh* mesh = scene->mMeshes[0];
-	printf ("    %i vertices in mesh[0]\n", mesh->mNumVertices);
-	g_point_count = mesh->mNumVertices;
-
-	// allocate memory for vertex points
-	if (mesh->HasPositions ()) {
-		printf ("mesh has positions\n");
-		g_vp = (GLfloat*)malloc (g_point_count * 3 * sizeof (GLfloat));
-	}
-	if (mesh->HasNormals ()) {
-		printf ("mesh has normals\n");
-		g_vn = (GLfloat*)malloc (g_point_count * 3 * sizeof (GLfloat));
-	}
-	if (mesh->HasTextureCoords (0)) {
-		printf ("mesh has texture coords\n");
-		g_vt = (GLfloat*)malloc (g_point_count * 2 * sizeof (GLfloat));
-	}
-	if (mesh->HasTangentsAndBitangents ()) {
-		// NB: could allocate tangents here too
-	}
-
-	for (unsigned int v_i = 0; v_i < mesh->mNumVertices; v_i++) {
-		if (mesh->HasPositions ()) {
-			const aiVector3D* vp = &(mesh->mVertices[v_i]);
-			g_vp[v_i * 3] = (GLfloat)vp->x;
-			g_vp[v_i * 3 + 1] = (GLfloat)vp->y;
-			g_vp[v_i * 3 + 2] = (GLfloat)vp->z;
-		}
-		if (mesh->HasNormals ()) {
-			const aiVector3D* vn = &(mesh->mNormals[v_i]);
-			g_vn[v_i * 3] = (GLfloat)vn->x;
-			g_vn[v_i * 3 + 1] = (GLfloat)vn->y;
-			g_vn[v_i * 3 + 2] = (GLfloat)vn->z;
-		}
-		if (mesh->HasTextureCoords (0)) {
-			const aiVector3D* vt = &(mesh->mTextureCoords[0][v_i]);
-			g_vt[v_i * 2] = (GLfloat)vt->x;
-			g_vt[v_i * 2 + 1] = (GLfloat)vt->y;
-		}
-		if (mesh->HasTangentsAndBitangents ()) {
-			// NB: could store/print tangents here
-		}
-	}
-
-	aiReleaseImport (scene);
-
-	printf ("mesh loaded\n");
-
-	return true;
-}
+#include "lib/load_utils.cpp"
 
 int main () {
 	assert (restart_gl_log ());
@@ -166,9 +46,9 @@ int main () {
 	glDepthFunc (GL_LESS);
 	assert (load_mesh ("meshes/monkey.obj"));
 
-	GLuint vao;
-	glGenVertexArrays (1, &vao);
-	glBindVertexArray (vao);
+	GLuint monkey_vao;
+	glGenVertexArrays (1, &monkey_vao);
+	glBindVertexArray (monkey_vao);
 
 	GLuint points_vbo;
 	if (NULL != g_vp) {
@@ -281,11 +161,12 @@ int main () {
 
 		_update_fps_counter (g_window);
 		// wipe the drawing surface clear
+		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glViewport (0, 0, g_gl_width*2, g_gl_height*2);
 
 		glUseProgram (shader_programme);
-		glBindVertexArray (vao);
+		glBindVertexArray (monkey_vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays (GL_TRIANGLES, 0, g_point_count);
 		// update other events like input handling
