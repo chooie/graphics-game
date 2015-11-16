@@ -33,8 +33,8 @@
 #include "lib/user_input.cpp"
 
 // keep track of window size for things like the viewport and the mouse cursor
-int g_gl_width = 640;
-int g_gl_height = 480;
+int g_gl_width = 800;
+int g_gl_height = 600;
 GLFWwindow* g_window = NULL;
 
 int main () {
