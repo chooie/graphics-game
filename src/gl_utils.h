@@ -43,4 +43,6 @@ bool create_programme (GLuint vert, GLuint frag, GLuint* programme);
 GLuint create_programme_from_files (
 	const char* vert_file_name, const char* frag_file_name
 );
+/*----------------------------------TEXTURES----------------------------------*/
+bool load_texture (const char* file_name, GLuint* tex);
 #endif
