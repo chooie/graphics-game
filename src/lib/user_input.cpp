@@ -1,4 +1,4 @@
-void handleUserInput(
+void handle_user_input(
   float cam_pos[], double& elapsed_seconds,
   float& cam_speed, float& cam_yaw, float& cam_yaw_speed,
   int view_mat_location

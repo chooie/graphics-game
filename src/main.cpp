@@ -30,6 +30,7 @@ int g_gl_height = 600;
 GLFWwindow* g_window = NULL;
 
 #include "lib/load_utils.cpp"
+#include "lib/user_input.cpp"
 
 int main () {
 	assert (restart_gl_log ());
@@ -146,52 +147,11 @@ int main () {
 		// update other events like input handling
 		glfwPollEvents ();
 
-		// control keys
-		bool cam_moved = false;
-		if (glfwGetKey (g_window, GLFW_KEY_A)) {
-			cam_pos[0] -= cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if (glfwGetKey (g_window, GLFW_KEY_D)) {
-			cam_pos[0] += cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if (glfwGetKey (g_window, GLFW_KEY_UP)) {
-			cam_pos[1] += cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if (glfwGetKey (g_window, GLFW_KEY_DOWN)) {
-			cam_pos[1] -= cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if (glfwGetKey (g_window, GLFW_KEY_W)) {
-			cam_pos[2] -= cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if (glfwGetKey (g_window, GLFW_KEY_S)) {
-			cam_pos[2] += cam_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if (glfwGetKey (g_window, GLFW_KEY_LEFT)) {
-			cam_yaw += cam_yaw_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		if (glfwGetKey (g_window, GLFW_KEY_RIGHT)) {
-			cam_yaw -= cam_yaw_speed * elapsed_seconds;
-			cam_moved = true;
-		}
-		// update view matrix
-		if (cam_moved) {
-			mat4 T = translate (identity_mat4 (), vec3 (-cam_pos[0], -cam_pos[1],
-				-cam_pos[2])); // cam translation
-			mat4 R = rotate_y_deg (identity_mat4 (), -cam_yaw); //
-			mat4 view_mat = R * T;
-			glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, view_mat.m);
-		}
+		handle_user_input(
+			cam_pos, elapsed_seconds, cam_speed, cam_yaw, cam_yaw_speed,
+			view_mat_location
+		);
 
-		if (GLFW_PRESS == glfwGetKey (g_window, GLFW_KEY_ESCAPE)) {
-			glfwSetWindowShouldClose (g_window, 1);
-		}
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers (g_window);
 	}
