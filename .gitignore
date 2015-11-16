@@ -2,4 +2,7 @@
 .DS_Store
 
 # Ignore log files
-.log
+*.log
+
+# Ignore unit test files
+*.gcda
