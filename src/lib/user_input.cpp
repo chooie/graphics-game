@@ -15,11 +15,11 @@ void handle_user_input(
 		move.v[0] += cam.cam_speed * elapsed_seconds;
 		cam_moved = true;
 	}
-	if (glfwGetKey (g_window, GLFW_KEY_Q)) {
+	if (glfwGetKey (g_window, GLFW_KEY_EQUAL)) {
 		move.v[1] += cam.cam_speed * elapsed_seconds;
 		cam_moved = true;
 	}
-	if (glfwGetKey (g_window, GLFW_KEY_E)) {
+	if (glfwGetKey (g_window, GLFW_KEY_MINUS)) {
 		move.v[1] -= cam.cam_speed * elapsed_seconds;
 		cam_moved = true;
 	}
@@ -90,7 +90,7 @@ void handle_user_input(
 		cam.rgt = cam.R * vec4 (1.0, 0.0, 0.0, 0.0);
 		cam.up = cam.R * vec4 (0.0, 1.0, 0.0, 0.0);
 	}
-	if (glfwGetKey (g_window, GLFW_KEY_Z)) {
+	if (glfwGetKey (g_window, GLFW_KEY_Q)) {
 		cam_roll -= cam.cam_heading_speed * elapsed_seconds;
 		cam_moved = true;
 		float q_roll[16];
@@ -103,7 +103,7 @@ void handle_user_input(
 		cam.rgt = cam.R * vec4 (1.0, 0.0, 0.0, 0.0);
 		cam.up = cam.R * vec4 (0.0, 1.0, 0.0, 0.0);
 	}
-	if (glfwGetKey (g_window, GLFW_KEY_C)) {
+	if (glfwGetKey (g_window, GLFW_KEY_E)) {
 		cam_roll += cam.cam_heading_speed * elapsed_seconds;
 		cam_moved = true;
 		float q_roll[16];
@@ -128,12 +128,11 @@ void handle_user_input(
 		cam.cam_pos += vec3 (cam.fwd) * -move.v[2];
 		cam.cam_pos += vec3 (cam.up) * move.v[1];
 		cam.cam_pos += vec3 (cam.rgt) * move.v[0];
-		mat4 T = translate (identity_mat4 (), vec3 (cam.cam_pos));
+		cam.T = translate (identity_mat4 (), vec3 (cam.cam_pos));
 
-		cam.view_mat = inverse (cam.R) * inverse (T);
+		cam.view_mat = inverse (cam.R) * inverse (cam.T);
 		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, cam.view_mat.m);
 	}
-
 
 	if (GLFW_PRESS == glfwGetKey (g_window, GLFW_KEY_ESCAPE)) {
 		glfwSetWindowShouldClose (g_window, 1);

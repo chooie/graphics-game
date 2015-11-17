@@ -9,12 +9,6 @@ in vec3 pos_eye;
 in vec3 norm_eye;
 in vec2 st;
 
-
-// layout (binding = 0) uniform sampler2D diffuse_map;
-// layout (binding = 1) uniform sampler2D specular_map;
-// layout (binding = 2) uniform sampler2D ambient_map;
-// layout (binding = 3) uniform sampler2D emission_map;
-
 uniform sampler2D diffuse_map;
 uniform sampler2D specular_map;
 uniform sampler2D ambient_map;
@@ -25,9 +19,12 @@ uniform mat4 view;
 out vec4 frag_colour;
 
 vec3 light_position_world = vec3 (1.0, 1.0, 10.0);
-vec3 Ls = vec3 (1.0, 1.0, 1.0); // white specular colour
-vec3 Ld = vec3 (0.7, 0.7, 0.7); // dull white diffuse light colour
-vec3 La = vec3 (0.2, 0.2, 0.2); // grey ambient colour
+// Specular
+vec3 Ls = vec3 (1.0, 1.0, 1.0); // white
+// Diffuse
+vec3 Ld = vec3 (0.9, 0.9, 0.9); // dull white light
+// Ambient
+vec3 La = vec3 (0.2, 0.2, 0.2); // grey
 float specular_exponent = 100.0; // specular 'power'
 
 void main() {
