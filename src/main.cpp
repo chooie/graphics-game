@@ -33,16 +33,12 @@ int g_gl_height = 600;
 GLFWwindow* g_window = NULL;
 
 #include "lib/load_utils.cpp"
-#include "lib/user_input.cpp"
 #include "lib/camera.cpp"
+#include "lib/user_input.cpp"
 
 int main () {
 	assert (restart_gl_log ());
 	assert (start_gl ());
-	// tell GL to only draw onto a pixel if the shape is closer to the viewer
-	glEnable (GL_DEPTH_TEST); // enable depth-testing
-	// depth-testing interprets a smaller value as "closer"
-	glDepthFunc (GL_LESS);
 
 	GLuint monkey_vao;
 	int monkey_point_count;
@@ -56,6 +52,7 @@ int main () {
 	// Set up Planet
 	glBindVertexArray (planet_vao);
 
+	/* Shaders */
 	GLuint shader_programme = create_programme_from_files (
 		"shaders/test_vs.glsl", "shaders/test_fs.glsl"
 	);
@@ -86,20 +83,30 @@ int main () {
 	glActiveTexture (GL_TEXTURE3);
 	assert (load_texture ("images/tileable9b_emiss.png", &tex_emiss));
 
-	create_camera();
+	int model_mat_location = glGetUniformLocation (shader_programme, "model");
+	int view_mat_location = glGetUniformLocation (shader_programme, "view");
+	int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
+
+	/* Camera */
+	Camera cam;
 
 	glUseProgram (shader_programme);
-	int view_mat_location = glGetUniformLocation (shader_programme, "view");
-	glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, view_mat.m);
-	int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
-	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proj_mat);
+	glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, cam.view_mat.m);
+	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, cam.proj_mat.m);
 
-  mat4 model = identity_mat4();
-	int matrix_location = glGetUniformLocation(shader_programme, "model");
+	mat4 model = identity_mat4();
 
+	/* Rendering Defaults */
+
+	// tell GL to only draw onto a pixel if the shape is closer to the viewer
+	glEnable (GL_DEPTH_TEST); // enable depth-testing
+	// depth-testing interprets a smaller value as "closer"
+	glDepthFunc (GL_LESS);
 	glEnable (GL_CULL_FACE); // cull face
 	glCullFace (GL_BACK); // cull back face
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glFrontFace (GL_CCW); // GL_CCW for counter clock-wise
+	glViewport (0, 0, g_gl_width*2, g_gl_height*2);
 
 	while (!glfwWindowShouldClose (g_window)) {
 		static double previous_seconds = glfwGetTime ();
@@ -109,20 +116,18 @@ int main () {
 
 		_update_fps_counter (g_window);
 		// wipe the drawing surface clear
-		glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glViewport (0, 0, g_gl_width*2, g_gl_height*2);
 
 		glUseProgram (shader_programme);
 		model = translate(identity_mat4(), vec3(2.5, 0.0, 0.0));
-		glUniformMatrix4fv (matrix_location, 1, GL_FALSE, model.m);
+		glUniformMatrix4fv (model_mat_location, 1, GL_FALSE, model.m);
 		glBindVertexArray (monkey_vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays (GL_TRIANGLES, 0, monkey_point_count);
 
 		glUseProgram (shader_programme);
 		model = translate(identity_mat4(), vec3(-2.5, 0.0, 0.0));
-		glUniformMatrix4fv (matrix_location, 1, GL_FALSE, model.m);
+		glUniformMatrix4fv (model_mat_location, 1, GL_FALSE, model.m);
 		glBindVertexArray (planet_vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays (GL_TRIANGLES, 0, planet_point_count);
@@ -130,10 +135,7 @@ int main () {
 		// update other events like input handling
 		glfwPollEvents ();
 
-		handle_user_input(
-			cam_pos, elapsed_seconds, cam_speed, cam_yaw, cam_yaw_speed,
-			view_mat_location
-		);
+		handle_user_input(cam, elapsed_seconds, view_mat_location);
 
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers (g_window);
