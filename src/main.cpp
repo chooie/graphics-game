@@ -106,17 +106,20 @@ int main () {
 	// don't start at zero, or we will be too close
 	float cam_pos[] = {0.0f, 0.0f, 5.0f};
 	float cam_yaw = 0.0f; // y-rotation in degrees
-	mat4 T = translate (identity_mat4 (), vec3 (-cam_pos[0], -cam_pos[1],
-																							-cam_pos[2]));
+	mat4 T = translate (
+		identity_mat4 (), vec3 (-cam_pos[0], -cam_pos[1], -cam_pos[2])
+	);
 	mat4 R = rotate_y_deg (identity_mat4 (), -cam_yaw);
 	mat4 view_mat = R * T;
 
-	int view_mat_location = glGetUniformLocation (shader_programme, "view");
 	glUseProgram (shader_programme);
+	int view_mat_location = glGetUniformLocation (shader_programme, "view");
 	glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, view_mat.m);
 	int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
-	glUseProgram (shader_programme);
 	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proj_mat);
+
+  mat4 model = identity_mat4();
+	int matrix_location = glGetUniformLocation(shader_programme, "model");
 
 	glEnable (GL_CULL_FACE); // cull face
 	glCullFace (GL_BACK); // cull back face
@@ -135,11 +138,15 @@ int main () {
 		glViewport (0, 0, g_gl_width*2, g_gl_height*2);
 
 		glUseProgram (shader_programme);
+		model = translate(identity_mat4(), vec3(2.5, 0.0, 0.0));
+		glUniformMatrix4fv (matrix_location, 1, GL_FALSE, model.m);
 		glBindVertexArray (monkey_vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays (GL_TRIANGLES, 0, monkey_point_count);
 
 		glUseProgram (shader_programme);
+		model = translate(identity_mat4(), vec3(-2.5, 0.0, 0.0));
+		glUniformMatrix4fv (matrix_location, 1, GL_FALSE, model.m);
 		glBindVertexArray (planet_vao);
 		// draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays (GL_TRIANGLES, 0, planet_point_count);

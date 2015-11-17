@@ -23,5 +23,5 @@ void main() {
 	st = texture_coord;
 	norm_eye = (view * vec4 (vertex_normal, 0.0)).xyz;;
 	pos_eye = (view * vec4 (vertex_position, 1.0)).xyz;
-	gl_Position = proj * vec4 (pos_eye, 1.0);
+	gl_Position = proj * model * vec4 (pos_eye, 1.0);
 }
