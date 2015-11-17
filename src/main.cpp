@@ -44,14 +44,10 @@ int main () {
 	GLuint monkey_vao;
 	int monkey_point_count;
 	assert (load_mesh ("meshes/monkey.obj", &monkey_vao, &monkey_point_count));
-	// Set up Monkey
-	glBindVertexArray (monkey_vao);
 
 	GLuint planet_vao;
 	int planet_point_count;
 	assert(load_mesh("meshes/planet.obj", &planet_vao, &planet_point_count));
-	// Set up Planet
-	glBindVertexArray (planet_vao);
 
 	/* Shaders */
 	GLuint shader_programme = create_programme_from_files (
@@ -65,13 +61,9 @@ int main () {
 	int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
 
 	/* Create a Camera instance */
-	Camera cam;
+	Camera cam(view_mat_location, proj_mat_location);
 
-	glUseProgram (shader_programme);
-	glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, cam.get_view_mat().m);
-	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, cam.get_proj_mat().m);
-
-	mat4 model = identity_mat4();
+	mat4 model;
 
 	render_defaults();
 
@@ -106,7 +98,7 @@ int main () {
 		// update other events like input handling
 		glfwPollEvents ();
 
-		handle_user_input(cam, elapsed_seconds, view_mat_location);
+		handle_user_input(cam, elapsed_seconds);
 
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers (g_window);

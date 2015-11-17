@@ -1,5 +1,5 @@
 void handle_user_input(
-  Camera &cam, float elapsed_seconds, int view_mat_location
+  Camera &cam, float elapsed_seconds
 ) {
 
   cam.reset_control();
@@ -42,7 +42,7 @@ void handle_user_input(
 		cam.roll_right(elapsed_seconds);
 	}
 
-  cam.update(view_mat_location);
+  cam.update();
 
 	if (GLFW_PRESS == glfwGetKey (g_window, GLFW_KEY_ESCAPE)) {
 		glfwSetWindowShouldClose (g_window, 1);

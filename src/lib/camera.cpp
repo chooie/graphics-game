@@ -66,6 +66,8 @@ void mult_quat_quat (float* result, float* r, float* s) {
 
 class Camera {
 	private:
+		int view_mat_location;
+		int proj_mat_location;
 		mat4 view_mat;
 		mat4 proj_mat;
 		vec3 cam_pos;
@@ -95,8 +97,10 @@ class Camera {
 		float cam_pitch;
 		float cam_roll;
 	public:
-		Camera();
-		void update(int view_mat_location);
+		Camera(int view_mat_location, int proj_mat_location);
+		void update();
+		void set_view();
+		void set_proj();
 		void reset_control();
 		void strafe_left(double elapsed_seconds);
 		void strafe_right(double elapsed_seconds);
@@ -115,7 +119,9 @@ class Camera {
 		mat4 get_proj_mat();
 };
 
-Camera::Camera() {
+Camera::Camera(int vm_location, int pm_location) {
+	view_mat_location = vm_location;
+	proj_mat_location = pm_location;
 	cam_pos = vec3 (0.0f, 0.0f, 5.0f);
 	near = 0.1f; // clipping plane
 	far = 100.0f; // clipping plane
@@ -138,10 +144,13 @@ Camera::Camera() {
 	rgt = vec4 (1.0f, 0.0f, 0.0f, 0.0f);
 	up = vec4 (0.0f, 1.0f, 0.0f, 0.0f);
 
+	set_view();
+	set_proj();
+
 	reset_control();
 }
 
-void Camera::update(int view_mat_location) {
+void Camera::update() {
 
 	// update view matrix
 	if (cam_moved) {
@@ -158,8 +167,18 @@ void Camera::update(int view_mat_location) {
 		T = translate (identity_mat4 (), vec3 (cam_pos));
 
 		view_mat = inverse (R) * inverse (T);
-		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, view_mat.m);
+		set_view();
 	}
+}
+
+
+void Camera::set_view() {
+	glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, view_mat.m);
+}
+
+void Camera::set_proj() {
+	// Maybe here add some camera controls
+	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, proj_mat.m);
 }
 
 void Camera::reset_control() {
