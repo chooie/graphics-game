@@ -67,8 +67,8 @@ int main () {
 	Camera cam;
 
 	glUseProgram (shader_programme);
-	glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, cam.view_mat.m);
-	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, cam.proj_mat.m);
+	glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, cam.get_view_mat().m);
+	glUniformMatrix4fv (proj_mat_location, 1, GL_FALSE, cam.get_proj_mat().m);
 
 	mat4 model = identity_mat4();
 
