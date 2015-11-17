@@ -32,6 +32,7 @@ int g_gl_width = 800;
 int g_gl_height = 600;
 GLFWwindow* g_window = NULL;
 
+#include "lib/general_utils.cpp"
 #include "lib/load_utils.cpp"
 #include "lib/camera.cpp"
 #include "lib/user_input.cpp"
@@ -63,7 +64,7 @@ int main () {
 	int view_mat_location = glGetUniformLocation (shader_programme, "view");
 	int proj_mat_location = glGetUniformLocation (shader_programme, "proj");
 
-	/* Camera */
+	/* Create a Camera instance */
 	Camera cam;
 
 	glUseProgram (shader_programme);
@@ -72,17 +73,7 @@ int main () {
 
 	mat4 model = identity_mat4();
 
-	/* Rendering Defaults */
-
-	// tell GL to only draw onto a pixel if the shape is closer to the viewer
-	glEnable (GL_DEPTH_TEST); // enable depth-testing
-	// depth-testing interprets a smaller value as "closer"
-	glDepthFunc (GL_LESS);
-	glEnable (GL_CULL_FACE); // cull face
-	glCullFace (GL_BACK); // cull back face
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-	glFrontFace (GL_CCW); // GL_CCW for counter clock-wise
-	glViewport (0, 0, g_gl_width*2, g_gl_height*2);
+	render_defaults();
 
 	while (!glfwWindowShouldClose (g_window)) {
 		static double previous_seconds = glfwGetTime ();
