@@ -2,8 +2,6 @@ void handle_user_input(
   Camera &cam, float elapsed_seconds
 ) {
 
-  cam.reset_control();
-
   // control keys
 	if (glfwGetKey (g_window, GLFW_KEY_A)) {
     cam.strafe_left(elapsed_seconds);
@@ -41,8 +39,6 @@ void handle_user_input(
 	if (glfwGetKey (g_window, GLFW_KEY_E)) {
 		cam.roll_right(elapsed_seconds);
 	}
-
-  cam.update();
 
 	if (GLFW_PRESS == glfwGetKey (g_window, GLFW_KEY_ESCAPE)) {
 		glfwSetWindowShouldClose (g_window, 1);

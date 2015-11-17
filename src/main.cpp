@@ -73,6 +73,8 @@ int main () {
 		double elapsed_seconds = current_seconds - previous_seconds;
 		previous_seconds = current_seconds;
 
+		cam.reset_control();
+
 		_update_fps_counter (g_window);
 		// wipe the drawing surface clear
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -99,6 +101,8 @@ int main () {
 		glfwPollEvents ();
 
 		handle_user_input(cam, elapsed_seconds);
+
+		cam.update();
 
 		// put the stuff we've been drawing onto the display
 		glfwSwapBuffers (g_window);
