@@ -57,31 +57,7 @@ int main () {
 		"shaders/test_vs.glsl", "shaders/test_fs.glsl"
 	);
 
-	GLint diffuse_map_loc, specular_map_loc, ambient_map_loc, emission_map_loc;
-	diffuse_map_loc = glGetUniformLocation (shader_programme, "diffuse_map");
-	specular_map_loc = glGetUniformLocation (shader_programme, "specular_map");
-	ambient_map_loc = glGetUniformLocation (shader_programme, "ambient_map");
-	emission_map_loc = glGetUniformLocation (shader_programme, "emission_map");
-	assert (diffuse_map_loc > -1);
-	assert (specular_map_loc > -1);
-	assert (ambient_map_loc > -1);
-	assert (emission_map_loc > -1);
-	glUseProgram (shader_programme);
-	glUniform1i (diffuse_map_loc, 0);
-	glUniform1i (specular_map_loc, 1);
-	glUniform1i (ambient_map_loc, 2);
-	glUniform1i (emission_map_loc, 3);
-
-	// load texture
-	GLuint tex_diff, tex_spec, tex_amb, tex_emiss;
-	glActiveTexture (GL_TEXTURE0);
-	assert (load_texture ("images/boulder_diff.png", &tex_diff));
-	glActiveTexture (GL_TEXTURE1);
-	assert (load_texture ("images/boulder_spec.png", &tex_spec));
-	glActiveTexture (GL_TEXTURE2);
-	assert (load_texture ("images/ao.png", &tex_amb));
-	glActiveTexture (GL_TEXTURE3);
-	assert (load_texture ("images/tileable9b_emiss.png", &tex_emiss));
+	do_texture_stuff(shader_programme);
 
 	int model_mat_location = glGetUniformLocation (shader_programme, "model");
 	int view_mat_location = glGetUniformLocation (shader_programme, "view");
@@ -118,18 +94,22 @@ int main () {
 		// wipe the drawing surface clear
 		glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		// Draw Monkey
 		glUseProgram (shader_programme);
 		model = translate(identity_mat4(), vec3(2.5, 0.0, 0.0));
 		glUniformMatrix4fv (model_mat_location, 1, GL_FALSE, model.m);
 		glBindVertexArray (monkey_vao);
-		// draw points 0-3 from the currently bound VAO with current in-use shader
 		glDrawArrays (GL_TRIANGLES, 0, monkey_point_count);
 
+		// Draw Planet
 		glUseProgram (shader_programme);
 		model = translate(identity_mat4(), vec3(-2.5, 0.0, 0.0));
 		glUniformMatrix4fv (model_mat_location, 1, GL_FALSE, model.m);
 		glBindVertexArray (planet_vao);
-		// draw points 0-3 from the currently bound VAO with current in-use shader
+		glDrawArrays (GL_TRIANGLES, 0, planet_point_count);
+
+		model = model = translate(identity_mat4(), vec3(-10, -10, 0.0));
+		glUniformMatrix4fv (model_mat_location, 1, GL_FALSE, model.m);
 		glDrawArrays (GL_TRIANGLES, 0, planet_point_count);
 
 		// update other events like input handling
