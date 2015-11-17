@@ -1,4 +1,4 @@
-void handle_user_input(
+/*void handle_user_input(
   float cam_pos[], double& elapsed_seconds,
   float& cam_speed, float& cam_yaw, float& cam_yaw_speed,
   int view_mat_location
@@ -52,4 +52,140 @@ void handle_user_input(
   if (GLFW_PRESS == glfwGetKey (g_window, GLFW_KEY_ESCAPE)) {
     glfwSetWindowShouldClose (g_window, 1);
   }
+}*/
+
+void handle_user_input() {
+  // control keys
+	bool cam_moved = false;
+	vec3 move (0.0, 0.0, 0.0);
+	float cam_yaw = 0.0f; // y-rotation in degrees
+	float cam_pitch = 0.0f;
+	float cam_roll = 0.0;
+	if (glfwGetKey (g_window, GLFW_KEY_A)) {
+		move.v[0] -= cam_speed * elapsed_seconds;
+		cam_moved = true;
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_D)) {
+		move.v[0] += cam_speed * elapsed_seconds;
+		cam_moved = true;
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_Q)) {
+		move.v[1] += cam_speed * elapsed_seconds;
+		cam_moved = true;
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_E)) {
+		move.v[1] -= cam_speed * elapsed_seconds;
+		cam_moved = true;
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_W)) {
+		move.v[2] -= cam_speed * elapsed_seconds;
+		cam_moved = true;
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_S)) {
+		move.v[2] += cam_speed * elapsed_seconds;
+		cam_moved = true;
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_LEFT)) {
+		cam_yaw += cam_heading_speed * elapsed_seconds;
+		cam_moved = true;
+
+		// create a quaternion representing change in heading (the yaw)
+		float q_yaw[16];
+		create_versor (q_yaw, cam_yaw, up.v[0], up.v[1], up.v[2]);
+		// add yaw rotation to the camera's current orientation
+		mult_quat_quat (quaternion, q_yaw, quaternion);
+
+		// recalc axes to suit new orientation
+		quat_to_mat4 (R.m, quaternion);
+		fwd = R * vec4 (0.0, 0.0, -1.0, 0.0);
+		rgt = R * vec4 (1.0, 0.0, 0.0, 0.0);
+		up = R * vec4 (0.0, 1.0, 0.0, 0.0);
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_RIGHT)) {
+		cam_yaw -= cam_heading_speed * elapsed_seconds;
+		cam_moved = true;
+		float q_yaw[16];
+		create_versor (q_yaw, cam_yaw, up.v[0], up.v[1], up.v[2]);
+		mult_quat_quat (quaternion, q_yaw, quaternion);
+
+		// recalc axes to suit new orientation
+		quat_to_mat4 (R.m, quaternion);
+		fwd = R * vec4 (0.0, 0.0, -1.0, 0.0);
+		rgt = R * vec4 (1.0, 0.0, 0.0, 0.0);
+		up = R * vec4 (0.0, 1.0, 0.0, 0.0);
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_UP)) {
+		cam_pitch += cam_heading_speed * elapsed_seconds;
+		cam_moved = true;
+		float q_pitch[16];
+		create_versor (q_pitch, cam_pitch, rgt.v[0], rgt.v[1], rgt.v[2]);
+		mult_quat_quat (quaternion, q_pitch, quaternion);
+
+		// recalc axes to suit new orientation
+		quat_to_mat4 (R.m, quaternion);
+		fwd = R * vec4 (0.0, 0.0, -1.0, 0.0);
+		rgt = R * vec4 (1.0, 0.0, 0.0, 0.0);
+		up = R * vec4 (0.0, 1.0, 0.0, 0.0);
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_DOWN)) {
+		cam_pitch -= cam_heading_speed * elapsed_seconds;
+		cam_moved = true;
+		float q_pitch[16];
+		create_versor (q_pitch, cam_pitch, rgt.v[0], rgt.v[1], rgt.v[2]);
+		mult_quat_quat (quaternion, q_pitch, quaternion);
+
+		// recalc axes to suit new orientation
+		quat_to_mat4 (R.m, quaternion);
+		fwd = R * vec4 (0.0, 0.0, -1.0, 0.0);
+		rgt = R * vec4 (1.0, 0.0, 0.0, 0.0);
+		up = R * vec4 (0.0, 1.0, 0.0, 0.0);
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_Z)) {
+		cam_roll -= cam_heading_speed * elapsed_seconds;
+		cam_moved = true;
+		float q_roll[16];
+		create_versor (q_roll, cam_roll, fwd.v[0], fwd.v[1], fwd.v[2]);
+		mult_quat_quat (quaternion, q_roll, quaternion);
+
+		// recalc axes to suit new orientation
+		quat_to_mat4 (R.m, quaternion);
+		fwd = R * vec4 (0.0, 0.0, -1.0, 0.0);
+		rgt = R * vec4 (1.0, 0.0, 0.0, 0.0);
+		up = R * vec4 (0.0, 1.0, 0.0, 0.0);
+	}
+	if (glfwGetKey (g_window, GLFW_KEY_C)) {
+		cam_roll += cam_heading_speed * elapsed_seconds;
+		cam_moved = true;
+		float q_roll[16];
+		create_versor (q_roll, cam_roll, fwd.v[0], fwd.v[1], fwd.v[2]);
+		mult_quat_quat (quaternion, q_roll, quaternion);
+
+		// recalc axes to suit new orientation
+		quat_to_mat4 (R.m, quaternion);
+		fwd = R * vec4 (0.0, 0.0, -1.0, 0.0);
+		rgt = R * vec4 (1.0, 0.0, 0.0, 0.0);
+		up = R * vec4 (0.0, 1.0, 0.0, 0.0);
+	}
+	// update view matrix
+	if (cam_moved) {
+		quat_to_mat4 (R.m, quaternion);
+
+		// checking for fp errors
+		//	printf ("dot fwd . up %f\n", dot (fwd, up));
+		//	printf ("dot rgt . up %f\n", dot (rgt, up));
+		//	printf ("dot fwd . rgt\n %f", dot (fwd, rgt));
+
+		cam_pos = cam_pos + vec3 (fwd) * -move.v[2];
+		cam_pos = cam_pos + vec3 (up) * move.v[1];
+		cam_pos = cam_pos + vec3 (rgt) * move.v[0];
+		mat4 T = translate (identity_mat4 (), vec3 (cam_pos));
+
+		view_mat = inverse (R) * inverse (T);
+		glUniformMatrix4fv (view_mat_location, 1, GL_FALSE, view_mat.m);
+	}
+
+
+	if (GLFW_PRESS == glfwGetKey (g_window, GLFW_KEY_ESCAPE)) {
+		glfwSetWindowShouldClose (g_window, 1);
+	}
 }
