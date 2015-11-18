@@ -1,6 +1,8 @@
 /******************************************************************************\
-| Asteroid Game - Code is modified from Anton's OpenGL Tutorials.              |
-| Original Header:                                                             |                                                      |
+| Asteroid Game - Code is modified from Anton's OpenGL Tutorials (See below).  |
+| Author: Charlie Hebert                                                       |
+| Copyright Charlie Hebert                                                     |
+|******************************************************************************|
 | OpenGL 4 Example Code.                                                       |
 | Accompanies written series "Anton's OpenGL 4 Tutorials"                      |
 | Email: anton at antongerdelan dot net                                        |
@@ -8,6 +10,7 @@
 | Copyright Dr Anton Gerdelan, Trinity College Dublin, Ireland.                |
 | See individual libraries separate legal notices                              |
 |******************************************************************************|
+| Quaternion Camera                                                            |
 | Importing Meshes                                                             |
 | Using Textures for Lighting Coefficients                                     |
 \******************************************************************************/
