@@ -1,4 +1,12 @@
 #include "general_utils.h"
+#include <stdio.h>
+
+/* Support for high-dpi devices (i.e. Mac) */
+void retina_glViewPort() {
+	int width, height;
+	glfwGetFramebufferSize(g_window, &width, &height);
+	glViewport (0, 0, width, height);
+}
 
 void render_defaults() {
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
@@ -9,5 +17,5 @@ void render_defaults() {
 	glCullFace (GL_BACK); // cull back face
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glFrontFace (GL_CCW); // GL_CCW for counter clock-wise
-	glViewport (0, 0, g_gl_width*2, g_gl_height*2);
+	retina_glViewPort();
 }

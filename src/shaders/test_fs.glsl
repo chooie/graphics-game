@@ -1,8 +1,3 @@
-/* NOTE: this shader is for GLSL 4.2.0 (OpenGL 4.2)
-to convert it to an earlier version, you'll need to remove
-layout (binding = x) for each texture, and instead explicitly
-set glUniform1i() for each texture in C with these values */
-
 #version 400
 
 in vec3 pos_eye;
@@ -19,12 +14,14 @@ uniform mat4 view;
 out vec4 frag_colour;
 
 vec3 light_position_world = vec3 (1.0, 1.0, 10.0);
+
 // Specular
 vec3 Ls = vec3 (1.0, 1.0, 1.0); // white
 // Diffuse
 vec3 Ld = vec3 (0.9, 0.9, 0.9); // dull white light
 // Ambient
 vec3 La = vec3 (0.2, 0.2, 0.2); // grey
+
 float specular_exponent = 100.0; // specular 'power'
 
 void main() {

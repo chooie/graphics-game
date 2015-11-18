@@ -3,8 +3,7 @@
 
 #include <GLFW/glfw3.h> // GLFW helper library
 
-int extern g_gl_width;
-int extern g_gl_height;
+extern GLFWwindow* g_window;
 
 void render_defaults();
 
