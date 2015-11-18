@@ -8,7 +8,7 @@ uniform mat4 model, view, proj;
 
 out vec3 pos_eye;
 out vec3 norm_eye; // positions and normals in eye space
-out vec2 st; // texture coordinates passed through from from vertex shader
+out vec2 st; // texture coordinates passed through from vertex shader
 
 void main() {
 	st = texture_coord;

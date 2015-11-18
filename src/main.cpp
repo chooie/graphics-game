@@ -45,7 +45,7 @@ int main () {
 
 	/* Shaders */
 	GLuint shader_programme = create_programme_from_files (
-		"shaders/test_vs.glsl", "shaders/test_fs.glsl"
+		"shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl"
 	);
 
 	do_texture_stuff(shader_programme);

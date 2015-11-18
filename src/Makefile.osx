@@ -7,7 +7,7 @@ LOC_LIB = $(LIB_PATH)libGLEW.a $(LIB_PATH)libglfw3.a $(LIB_PATH)libassimp.a
 SYS_LIB = -lz
 FRAMEWORKS = -framework Cocoa -framework OpenGL -framework IOKit
 LIB_DIR = lib
-SRC = main.cpp maths_funcs.cpp gl_utils.cpp stb_image.c $(wildcard $(LIB_DIR)/*.cpp)
+SRC = main.cpp maths_funcs.cpp gl_utils.cpp stb_image.cpp $(wildcard $(LIB_DIR)/*.cpp)
 
 all:
 	${CC} ${FLAGS} ${FRAMEWORKS} -o ${BIN} ${SRC} ${INC} ${LOC_LIB} ${SYS_LIB}
