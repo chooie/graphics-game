@@ -1,3 +1,5 @@
+#include "general_utils.h"
+
 void render_defaults() {
 	// tell GL to only draw onto a pixel if the shape is closer to the viewer
 	glEnable (GL_DEPTH_TEST); // enable depth-testing

@@ -1,3 +1,5 @@
+#include "load_utils.h"
+
 bool load_texture (const char* file_name, GLuint* tex) {
 	int x, y, n;
 	int force_channels = 4;
@@ -195,5 +197,5 @@ void do_texture_stuff(GLuint shader_programme) {
 	assert (load_texture ("images/ao.png", &tex_amb));
 	glActiveTexture (GL_TEXTURE3);
 	assert (load_texture ("images/tileable9b_emiss.png", &tex_emiss));
-	
+
 }

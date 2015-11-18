@@ -12,11 +12,7 @@
 | Using Textures for Lighting Coefficients                                     |
 \******************************************************************************/
 #include "maths_funcs.h"
-#include "stb_image.h"
 #include "gl_utils.h"
-#include <assimp/cimport.h> // C importer
-#include <assimp/scene.h> // collects data
-#include <assimp/postprocess.h> // various extra operations
 #include <GL/glew.h> // include GLEW and new version of GL on Windows
 #include <GLFW/glfw3.h> // GLFW helper library
 #include <stdio.h>
@@ -27,15 +23,16 @@
 #include <math.h>
 #define GL_LOG_FILE "gl.log"
 
+// My Stuff
+#include "lib/general_utils.h"
+#include "lib/load_utils.h"
+#include "lib/camera.h"
+#include "lib/user_input.h"
+
 // keep track of window size for things like the viewport and the mouse cursor
 int g_gl_width = 800;
 int g_gl_height = 600;
 GLFWwindow* g_window = NULL;
-
-#include "lib/general_utils.cpp"
-#include "lib/load_utils.cpp"
-#include "lib/camera.cpp"
-#include "lib/user_input.cpp"
 
 int main () {
 	assert (restart_gl_log ());

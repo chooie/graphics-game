@@ -1,3 +1,5 @@
+#include "user_input.h"
+
 void handle_user_input(
   Camera &cam, float elapsed_seconds
 ) {
