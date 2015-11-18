@@ -1,11 +1,11 @@
 #ifndef load_utils_h
 #define load_utils_h
 
-#include <GL/glew.h> // include GLEW and new version of GL on Windows
-#include <GLFW/glfw3.h> // GLFW helper library
 #include <assimp/cimport.h> // C importer
 #include <assimp/scene.h> // collects data
 #include <assimp/postprocess.h> // various extra operations
+#include <GL/glew.h> // include GLEW and new version of GL on Windows
+#include <GLFW/glfw3.h> // GLFW helper library
 #include <assert.h>
 #include "../stb_image.h"
 

@@ -11,7 +11,7 @@
 | Importing Meshes                                                             |
 | Using Textures for Lighting Coefficients                                     |
 \******************************************************************************/
-#include "maths_funcs.h"
+
 #include "gl_utils.h"
 #include <GL/glew.h> // include GLEW and new version of GL on Windows
 #include <GLFW/glfw3.h> // GLFW helper library
