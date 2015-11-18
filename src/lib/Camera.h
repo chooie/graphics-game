@@ -1,9 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "../maths_funcs.h"
 #include <GLFW/glfw3.h> // GLFW helper library
-#include "versor.h"
+#include "../maths_funcs.h"
 
 extern int g_gl_width;
 extern int g_gl_height;

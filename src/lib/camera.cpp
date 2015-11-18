@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "versor.h"
 
 const vec4 Camera::FORWARD = vec4(0.0f, 0.0f, -1.0f, 0.0f);
 const vec4 Camera::RIGHT = vec4(1.0f, 0.0f, 0.0f, 0.0f);

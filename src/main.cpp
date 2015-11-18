@@ -15,6 +15,7 @@
 #include "gl_utils.h"
 #include <GL/glew.h> // include GLEW and new version of GL on Windows
 #include <GLFW/glfw3.h> // GLFW helper library
+#include "assert.h"
 
 // My Stuff
 #include "lib/general_utils.h"

@@ -1,5 +1,11 @@
 #include "load_utils.h"
 
+#include <assimp/cimport.h> // C importer
+#include <assimp/scene.h> // collects data
+#include <assimp/postprocess.h> // various extra operations
+#include <assert.h>
+#include "../stb_image.h"
+
 bool load_texture (const char* file_name, GLuint* tex) {
 	int x, y, n;
 	int force_channels = 4;
