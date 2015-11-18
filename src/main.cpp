@@ -15,13 +15,6 @@
 #include "gl_utils.h"
 #include <GL/glew.h> // include GLEW and new version of GL on Windows
 #include <GLFW/glfw3.h> // GLFW helper library
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <string.h>
-#define _USE_MATH_DEFINES
-#include <math.h>
-#define GL_LOG_FILE "gl.log"
 
 // My Stuff
 #include "lib/general_utils.h"
