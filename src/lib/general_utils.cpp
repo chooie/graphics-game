@@ -15,7 +15,7 @@ void render_defaults() {
 	glDepthFunc (GL_LESS);
 	glEnable (GL_CULL_FACE); // cull face
 	glCullFace (GL_BACK); // cull back face
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glFrontFace (GL_CCW); // GL_CCW for counter clock-wise
 	retina_glViewPort();
 }
